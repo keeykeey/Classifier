@@ -1,16 +1,19 @@
-import os
-import numpy as np
 
-CurrentDirectory = os.getcwd()
-CatPath = CurrentDirectory + '/training_set/cats'
-DogPath = CurrentDirectory + '/training_set/dogs'
+def preparation():
 
-CatFileList = os.listdir(PathOfCatImgs)
-DogfileList = os.listdir(PathOfDogimgs)
-CatFileList.remove('_DS_Store')
-DogFileList.remove('_DS_Store')
+    import os
+    import numpy as np
 
-def OriginalData():
+    CurrentDirectory = os.getcwd()
+    CatPath = CurrentDirectory + '/training_set/cats'
+    DogPath = CurrentDirectory + '/training_set/dogs'
+
+    CatFileList = os.listdir(PathOfCatImgs)
+    DogfileList = os.listdir(PathOfDogimgs)
+    CatFileList.remove('_DS_Store')
+    DogFileList.remove('_DS_Store')
+
+def GenerateAndSaveOriginalData():
     CatImgList = []
     DogImgList = []
 
@@ -28,7 +31,7 @@ def OriginalData():
     np.save(CurrentDirectory,OriginalSizedCatsImages)
     np.save(CurrentDirectory,OriginalSizedDogsImages)
 
-def resize(x):
+def resize(NumpyNdarray):
     SumOfCatsImagesShape = np.array([0,0,0])
     SumOfDogsImagesShape = np.array([0,0,0])
 
@@ -42,18 +45,25 @@ def resize(x):
     Length = MeanOfCatsAndDogsImagesShape[0]
     Height = MeanOfCatsAndDogsImagesShape[1]
 
-    x_out = []
-    for i in range(len(x)):
-        img = cv2.resize(x[i],dsize = (Length,Height))
-        x_out.append(img)
+    NumpyNdarray_out = []
+    for i in range(len(NumpyNdarray)):
+        img = cv2.resize(NumpyNdarray[i],dsize = (Length,Height))
+        NumpyNdarray_out.append(img)
     
     return img
 
+def regularize(NumpyNdarray):
+    RegularizedNumpyNdarray = np.round(NumpyNdarray.astype('float32')/255,decimals = 4)
+    return RegularizedNumpyNdarray
 
+def main():
+    preparation()
+    GenerateAndSaveOriginalData()
+    ModifiedSizeCatsImages = resize(OriginalSizedCatsImages)
+    ModigiedSizeDogsImages = resize(ModifiedSizedDogsImages)
+    RegularSizedCatsImages = regularize(ModifiedSizedCatsImages)
+    RegularSizedDogsImages = regularize(ModifiedSizedDogsImages)
 
-
-
-
-
-
+if __name__ == '__main__':
+    main() 
 
