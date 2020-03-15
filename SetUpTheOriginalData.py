@@ -5,55 +5,67 @@ def preparation():
     import numpy as np
 
     CurrentDirectory = os.getcwd()
-    CatPath = CurrentDirectory + '/training_set/cats'
-    DogPath = CurrentDirectory + '/training_set/dogs'
+    PathOfCatImgs = CurrentDirectory + '/training_set/cats'
+    PathOfDogImgs = CurrentDirectory + '/training_set/dogs'
 
     CatFileList = os.listdir(PathOfCatImgs)
-    DogfileList = os.listdir(PathOfDogimgs)
+    DogFileList = os.listdir(PathOfDogImgs)
     CatFileList.remove('_DS_Store')
     DogFileList.remove('_DS_Store')
 
-def GenerateAndSaveOriginalData():
+    return PathOfCatImgs,PathOfDogImgs,CatFileList,DogFileList
+
+def GenerateAndSaveOriginalData(PathOfCatImgs,PathOfDogImgs,CatFileList,DogFileList):
     CatImgList = []
     DogImgList = []
 
     for i in range(len(CatFileList)):
-        ArrayOfImg = cv2.imread(CatPath + '/' + CatFileList[i])
+        ArrayOfImg = cv2.imread(PathOfCatImgs + '/' + CatFileList[i])
         CatImgList.append(ArrayOfImg)
 
     for i in range(len(DogFileList)):
-        ArrayOfImg = cv2.imread(DogPath
+        ArrayOfImg = cv2.imread(PathOfDogImgs + '/' + DogFileList[i])
         DogImgList.append(ArrayOfImg)
 
     OriginalSizedCatsImages = np.array(CatImgList)
-    OriginalSisedDogsImages = np.array(DogImgList)
+    OriginalSizedDogsImages = np.array(DogImgList)
 
     np.save(CurrentDirectory,OriginalSizedCatsImages)
     np.save(CurrentDirectory,OriginalSizedDogsImages)
 
-def resize(NumpyNdarray):
+    return OriginalSizedCatsImages,OriginalSizedDogsImages
+
+def resize(OriginalSizedCatsImages,OriginalSizedDogsImages):
     SumOfCatsImagesShape = np.array([0,0,0])
     SumOfDogsImagesShape = np.array([0,0,0])
 
     for i in range(len(OriginalSizedCatsImages)):
         SumOfCatsImagesShape += OriginalSizedCatsImages[i].shape
-    for i in range(len(OriginalSizedCatsImages)):
+    for i in range(len(OriginalSizedSogsImages)):
         SumOfDogsImagesShape += OriginalSizedDogsImages[i].shape
-    MeanOfCatsAndDogsImageShape = (SumOfCatsImagesShape+SumOfDogsImagesShape)/(OriginalSizedCatsImages.size + OriginalSizedDogsImages.size)
-    MeanOfCatsAndDogsImagesShape = np.round(MeanOfCatsAndDogsImages.shape
+    MeanOfCatsAndDogsImagesShape = (SumOfCatsImagesShape+SumOfDogsImagesShape)/(OriginalSizedCatsImages.size + OriginalSizedDogsImages.size)
+    MeanOfCatsAndDogsImagesShape = np.round(MeanOfCatsAndDogsImages.shape)
 
     Length = MeanOfCatsAndDogsImagesShape[0]
     Height = MeanOfCatsAndDogsImagesShape[1]
 
-    NumpyNdarray_out = []
-    for i in range(len(NumpyNdarray)):
-        img = cv2.resize(NumpyNdarray[i],dsize = (Length,Height))
-        NumpyNdarray_out.append(img)
+    CatResizedImgs = []
+    for i in range(len(OriginalSizedCatsImages)):
+        img = cv2.resize(OriginalSizedCatsImages[i],dsize = (Length,Height))
+        CatResizedImgs.append(img)
     
-    return img
+    DogResizedImgs = []
+    for i in range(len(OriginalSizedDogsImages)):
+        img = cv2.resize(OriginalSizedDogsImages[i],dsize = (Length,Height))
+        DogResizedImgs.append(img)
 
-def regularize(NumpyNdarray):
-    RegularizedNumpyNdarray = np.round(NumpyNdarray.astype('float32')/255,decimals = 4)
+    np.save(CatResizedImgs)
+    np.save(DogResizedImgs)
+
+    returb CatResizedImgs,DogResizedImgs 
+
+def regularize(ResizedNumpyNdarray):
+    RegularizedNumpyNdarray = np.round(ResizedNumpyNdarray.astype('float32')/255,decimals = 4)
     return RegularizedNumpyNdarray
 
 def main():
