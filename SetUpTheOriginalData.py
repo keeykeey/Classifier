@@ -1,8 +1,8 @@
+import os
+import numpy as np
+import cv2
 
 def preparation():
-
-    import os
-    import numpy as np
 
     CurrentDirectory = os.getcwd()
     PathOfCatsImgs = CurrentDirectory + '/training_set/cats'
