@@ -2,9 +2,10 @@ import os
 import numpy as np
 import cv2
 
+CurrentDirectory = os.getcwd()
+
 def preparation():
 
-    CurrentDirectory = os.getcwd()
     PathOfCatsImgs = CurrentDirectory + '/training_set/cats'
     PathOfDogsImgs = CurrentDirectory + '/training_set/dogs'
 
