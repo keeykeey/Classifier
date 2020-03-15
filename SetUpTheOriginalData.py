@@ -5,15 +5,15 @@ def preparation():
     import numpy as np
 
     CurrentDirectory = os.getcwd()
-    PathOfCatImgs = CurrentDirectory + '/training_set/cats'
-    PathOfDogImgs = CurrentDirectory + '/training_set/dogs'
+    PathOfCatsImgs = CurrentDirectory + '/training_set/cats'
+    PathOfDogsImgs = CurrentDirectory + '/training_set/dogs'
 
-    CatFileList = os.listdir(PathOfCatImgs)
-    DogFileList = os.listdir(PathOfDogImgs)
-    CatFileList.remove('_DS_Store')
-    DogFileList.remove('_DS_Store')
+    CatsFileList = os.listdir(PathOfCatsImgs)
+    DogsFileList = os.listdir(PathOfDogsImgs)
+    CatsFileList.remove('_DS_Store')
+    DogsFileList.remove('_DS_Store')
 
-    return PathOfCatImgs,PathOfDogImgs,CatFileList,DogFileList
+    return PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList
 
 def GenerateAndSaveOriginalData(PathOfCatImgs,PathOfDogImgs,CatFileList,DogFileList):
     CatImgList = []
@@ -62,19 +62,21 @@ def resize(OriginalSizedCatsImages,OriginalSizedDogsImages):
     np.save(CatResizedImgs)
     np.save(DogResizedImgs)
 
-    returb CatResizedImgs,DogResizedImgs 
+#    return ResizedCatsImgs,ResizedCatsImgs 
 
 def regularize(ResizedNumpyNdarray):
     RegularizedNumpyNdarray = np.round(ResizedNumpyNdarray.astype('float32')/255,decimals = 4)
     return RegularizedNumpyNdarray
 
 def main():
-    preparation()
-    GenerateAndSaveOriginalData()
-    ModifiedSizeCatsImages = resize(OriginalSizedCatsImages)
-    ModigiedSizeDogsImages = resize(ModifiedSizedDogsImages)
-    RegularSizedCatsImages = regularize(ModifiedSizedCatsImages)
-    RegularSizedDogsImages = regularize(ModifiedSizedDogsImages)
+    PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList =  preparation()
+    OriginalSizedCatsImages,OriginalSizedDogsImages = GenerateAndSaveOriginalData(PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList)
+    ResizedCatsImgs,ResizedDogsImgs = resize(OriginalSizedCatsImages,OriginalSizedDogsImages)
+    regularize(ResizedCatsImages)
+    regularize(ResizedDogsImages)
+
+#    RegularSizedCatsImages = regularize(ResizedCatsImages)
+#    RegularSizedDogsImages = regularize(ResizedDogsImages)
 
 if __name__ == '__main__':
     main() 
