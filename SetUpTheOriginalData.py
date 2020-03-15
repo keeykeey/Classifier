@@ -42,10 +42,10 @@ def resize(OriginalSizedCatsImages,OriginalSizedDogsImages):
 
     for i in range(len(OriginalSizedCatsImages)):
         SumOfCatsImagesShape += OriginalSizedCatsImages[i].shape
-    for i in range(len(OriginalSizedSogsImages)):
+    for i in range(len(OriginalSizedDogsImages)):
         SumOfDogsImagesShape += OriginalSizedDogsImages[i].shape
     MeanOfCatsAndDogsImagesShape = (SumOfCatsImagesShape+SumOfDogsImagesShape)/(OriginalSizedCatsImages.size + OriginalSizedDogsImages.size)
-    MeanOfCatsAndDogsImagesShape = np.round(MeanOfCatsAndDogsImages.shape)
+    MeanOfCatsAndDogsImagesShape = np.round(MeanOfCatsAndDogsImagesShape)
 
     Length = MeanOfCatsAndDogsImagesShape[0]
     Height = MeanOfCatsAndDogsImagesShape[1]
@@ -63,7 +63,7 @@ def resize(OriginalSizedCatsImages,OriginalSizedDogsImages):
     np.save(CatResizedImgs)
     np.save(DogResizedImgs)
 
-#    return ResizedCatsImgs,ResizedCatsImgs 
+#    return ResizedCatsImgs,ResizedDogsImgs 
 
 def regularize(ResizedNumpyNdarray):
     RegularizedNumpyNdarray = np.round(ResizedNumpyNdarray.astype('float32')/255,decimals = 4)
