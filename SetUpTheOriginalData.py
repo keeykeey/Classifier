@@ -47,12 +47,12 @@ def resize(OriginalSizedCatsImages,OriginalSizedDogsImages):
     MeanOfCatsAndDogsImagesShape = (SumOfCatsImagesShape+SumOfDogsImagesShape)/(OriginalSizedCatsImages.size + OriginalSizedDogsImages.size)
     MeanOfCatsAndDogsImagesShape = np.round(MeanOfCatsAndDogsImagesShape)
 
-    Length = MeanOfCatsAndDogsImagesShape[0]
-    Height = MeanOfCatsAndDogsImagesShape[1]
+    Length = np.round(MeanOfCatsAndDogsImagesShape[0],decimals = 0).astype(np.int)
+    Height = np.round(MeanOfCatsAndDogsImagesShape[1],decimals = 0).astype(np.int)
 
     CatResizedImgs = []
     for i in range(len(OriginalSizedCatsImages)):
-        img = cv2.resize(OriginalSizedCatsImages[i],dsize = (Length,Height))
+        img = cv2.resize(OriginalSizedCatsImages[i],dsize =(Length,Height))
         CatResizedImgs.append(img)
     
     DogResizedImgs = []
@@ -60,10 +60,10 @@ def resize(OriginalSizedCatsImages,OriginalSizedDogsImages):
         img = cv2.resize(OriginalSizedDogsImages[i],dsize = (Length,Height))
         DogResizedImgs.append(img)
 
-    np.save(CatResizedImgs)
-    np.save(DogResizedImgs)
+    np.save('ResizedCatImg',CatResizedImgs)
+    np.save('ResizedDogImg',DogResizedImgs)
 
-#    return ResizedCatsImgs,ResizedDogsImgs 
+    return np.array(CatResizedImgs),np.array(DogResizedImgs) 
 
 def regularize(ResizedNumpyNdarray):
     RegularizedNumpyNdarray = np.round(ResizedNumpyNdarray.astype('float32')/255,decimals = 4)
@@ -71,8 +71,8 @@ def regularize(ResizedNumpyNdarray):
 
 def main():
     PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList =  preparation()
-    OriginalSizedCatsImages,OriginalSizedDogsImages = GenerateAndSaveOriginalData(PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList)
-    ResizedCatsImgs,ResizedDogsImgs = resize(OriginalSizedCatsImages,OriginalSizedDogsImages)
+    OriginalSizedCatsImages,OriginalSizedDogsImages = GenerateAndSaveOriginalData(PathOfCatsImgs,PathOfDogsImgs,CatsFileList[:10],DogsFileList[:10])
+    ResizedCatsImages,ResizedDogsImages = resize(OriginalSizedCatsImages,OriginalSizedDogsImages)
     regularize(ResizedCatsImages)
     regularize(ResizedDogsImages)
 
