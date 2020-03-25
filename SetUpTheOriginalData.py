@@ -71,13 +71,13 @@ def regularize(ResizedNumpyNdarray):
 
 def main():
     PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList =  preparation()
-    OriginalSizedCatsImages,OriginalSizedDogsImages = GenerateAndSaveOriginalData(PathOfCatsImgs,PathOfDogsImgs,CatsFileList[:10],DogsFileList[:10])
+    OriginalSizedCatsImages,OriginalSizedDogsImages = GenerateAndSaveOriginalData(PathOfCatsImgs,PathOfDogsImgs,CatsFileList,DogsFileList)
     ResizedCatsImages,ResizedDogsImages = resize(OriginalSizedCatsImages,OriginalSizedDogsImages)
-    regularize(ResizedCatsImages)
-    regularize(ResizedDogsImages)
+    RegularSizedCatsImages = regularize(ResizedCatsImages)
+    RegularSizedDogsImages = regularize(ResizedDogsImages)
 
-#    RegularSizedCatsImages = regularize(ResizedCatsImages)
-#    RegularSizedDogsImages = regularize(ResizedDogsImages)
+    np.save('RegularSizedCatsImages',RegularSizedCatsImages)
+    np.save('RegularSizedDogsImages',RegularSizedDogsImages)
 
 if __name__ == '__main__':
     main() 
