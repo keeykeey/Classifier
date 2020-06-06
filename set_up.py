@@ -23,5 +23,27 @@ print("Deleted %d images" % num_skipped)
 
 
 
+#make dataset 
+#note that tf version must be 2.0.0 or later than that
+batch_size = 32
+
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    "PetImages",
+    validation_split=0.2,
+    subset="training",
+    seed=1337,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    "PetImages",
+    validation_split=0.2,
+    subset="validation",
+    seed=1337,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+
+
 
 
