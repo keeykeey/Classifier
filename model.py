@@ -2,8 +2,9 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFOld
-import tensorflow as tf
-from tensorflow import keras
+#import tensorflow as tf
+#from tensorflow import keras
+#from tensortlow.keras import layers
 from keras.models import Sequencial
 from keras.layers import Conv2D,MaxPooling2D
 from keras.layers import Activation,Dropout,Flatten,Dense
@@ -13,7 +14,6 @@ from keras.utils import np_utils
 ClassNames = ['cats','dogs']
 #ClassLabels = [0,1]
 num_classes = 2
-random_state = 42
 
 class Classifier():
     '''
@@ -30,12 +30,39 @@ class Classifier():
         self.trainValidLabel = trainValidLabel 
 
     def train():
+        N_HIDDEN = 2
+        RESHAPED = allDatas.shape[1] * allDatas.shape[2]
+        DROPOUT = 0.1
+        NB_CLASSES = 2
+        BATCH_SIZE = 32
+        EPOCHS=10
+        OPTIMIZER = keras.optimizers.rmsprop(lr=0.0001,decay=1e-6)
+
         model = Sequential()
+        model.add(Conv2D(32,(3,3),padding='same',input_shape=self.trainTrain.shape[1:]))
+        model.add(Activation('relu'))
+        model.add(Conv2D(32,(3,3)))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2,2)))
+        model.add(Dropout(DROPOUT))
+
+        model.add(Conv2D(64,(3,3),padding='same'))
+        model.add(Activation('relu'))
+        model.add(Conv2D(64,(3,3)))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2,2)))
+        model.add(Dropout(DROPOUT))
+
+        model.add(Flatten())
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(NB_CLASSES))
+        model.add(Activation('softmax'))
 
 
-
-        model.add(Conv2D(32,(3,3),padding='same',input_shape=self.TrainImages.shape[1:]))
-
+        model.compile(loss='categorical_crossentropy',
+                 optimizer=OPTIMIZER,
+                 metrics = ['accuracy'])
 
 
 
