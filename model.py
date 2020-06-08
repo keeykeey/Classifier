@@ -25,9 +25,9 @@ class Classifier():
 
     def __init__(self,trainTrain,trainTrainLabel,trainValid,trainValidLabel):
         self.trainTrain = trainTrain
-        self.trainTrainLabel = trainTrainLabel
+        self.trainTrainLabel = keras.utils.to_categorical(trainTrainLabel,num_classes)
         self.trainValid = trainValid
-        self.trainValidLabel = trainValidLabel 
+        self.trainValidLabel = keras.utils.to_categorical(trainValidLabel,num_classes) 
 
     def train():
         N_HIDDEN = 2
@@ -35,7 +35,7 @@ class Classifier():
         DROPOUT = 0.1
         NB_CLASSES = 2
         BATCH_SIZE = 32
-        EPOCHS=10
+        EPOCHS=3
         OPTIMIZER = keras.optimizers.rmsprop(lr=0.0001,decay=1e-6)
 
         model = Sequential()
@@ -56,16 +56,24 @@ class Classifier():
         model.add(Flatten())
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
-        model.add(Dense(NB_CLASSES))
+        model.add(Dense(num_classes))
         model.add(Activation('softmax'))
-
 
         model.compile(loss='categorical_crossentropy',
                  optimizer=OPTIMIZER,
                  metrics = ['accuracy'])
 
+        model.fit(self.trainTrain,self.trainTrainLabel)
 
+        return model    
 
+    def eval():
+        pred = model.predict(self.trainValid)     
+        pred = np.argmax(pred,axis = 1)
+        trueAnswer = np.argmax(self.trainValidLabel,num_classes)
+        numCorrect = (pred == trueAnswer).sum()
+        precision = np.round(numCorrect / len(pred),2)        
+        print('precision:',precision)
 
 def main():
     _dogs = np.load("ResizedDogImg.npy")
