@@ -1,15 +1,16 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import KFOld
+from sklearn.model_selection import KFold
 #import tensorflow as tf
 #from tensorflow import keras
-#from tensortlow.keras import layers
-from keras.models import Sequencial
+#from tensorflow.keras import layers
+import keras
+from keras.models import Sequential
 from keras.layers import Conv2D,MaxPooling2D
 from keras.layers import Activation,Dropout,Flatten,Dense
 from keras.utils import np_utils
-
+import time
 
 ClassNames = ['cats','dogs']
 #ClassLabels = [0,1]
@@ -29,13 +30,12 @@ class Classifier():
         self.trainValid = trainValid
         self.trainValidLabel = keras.utils.to_categorical(trainValidLabel,num_classes) 
 
-    def train():
+    def train(self):
         N_HIDDEN = 2
-        RESHAPED = allDatas.shape[1] * allDatas.shape[2]
-        DROPOUT = 0.1
+        DROPOUT = 0.2
         NB_CLASSES = 2
         BATCH_SIZE = 32
-        EPOCHS=3
+        EPOCHS=2
         OPTIMIZER = keras.optimizers.rmsprop(lr=0.0001,decay=1e-6)
 
         model = Sequential()
@@ -63,36 +63,37 @@ class Classifier():
                  optimizer=OPTIMIZER,
                  metrics = ['accuracy'])
 
-        model.fit(self.trainTrain,self.trainTrainLabel,batch_size=32,epochs=EPOCHS)
+        model.fit(self.trainTrain,self.trainTrainLabel,validation_split = 0.2,batch_size=30,epochs=EPOCHS)
 
-        return model    
-
-    def eval(model):
+  # def eval(model):
         pred = model.predict(self.trainValid)     
         pred = np.argmax(pred,axis = 1)
-        trueAnswer = np.argmax(self.trainValidLabel,num_classes)
+        trueAnswer = np.argmax(self.trainValidLabel,axis = 1)
         numCorrect = (pred == trueAnswer).sum()
-        precision = np.round(numCorrect / len(pred),2)        
-        print('precision:',precision)
+        precision = numCorrect / len(pred)        
+        print('Precision of the Model is ... :',precision)
+        print(numCorrect)
+        print(len(pred))
+        
+        model.save('saved_models/{}.h5'.format(time.ctime()))
 
 def main():
-    rangeIndex = [np.random.randint(0,4000,400)]
-    _dogs = np.load("ResizedDogImg.npy")[:400][rangeIndex]
-    _cats = np.load("ResizedCatImg.npy")[:400][rangeIndex]
+    rangeIndex = np.random.randint(0,4000,400)
+    _dogs = np.load("ResizedDogImg.npy")[rangeIndex]
+    _cats = np.load("ResizedCatImg.npy")[rangeIndex]
     _dogsLabel = np.array([ 1 for i in range(len(_dogs))])
     _catsLabel = np.array([ 0 for i in range(len(_cats))])
 
-    _dogsCats = np.append(_dogs,_cats)
-    _dogsCatsLabel =np.append(_dogsLabels,_catsLabels)
+    _dogsCats = np.concatenate([_dogs,_cats])
+    _dogsCatsLabel =np.concatenate([_dogsLabel,_catsLabel])
 
     trainTrain = _dogsCats[:300]
     trainValid = _dogsCats[300:]
     trainTrainLabel = _dogsCatsLabel[:300]
     trainValidLabel = _dogsCatsLabel[300:]
 
-    Classifier = Classifier(trainTrain,trainTrainLabel,trainValid,trainValidLabel)
-    model = Classifier.train()    #学習
-    Classifier.eval()     #評価
+    classifyingModel = Classifier(trainTrain,trainTrainLabel,trainValid,trainValidLabel)
+    model = classifyingModel.train()    #学習、評価
 
 if __name__ == '__main__':
     main()
