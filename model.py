@@ -35,7 +35,7 @@ class Classifier():
         DROPOUT = 0.2
         NB_CLASSES = 2
         BATCH_SIZE = 32
-        EPOCHS=2
+        EPOCHS=10
         OPTIMIZER = keras.optimizers.rmsprop(lr=0.0001,decay=1e-6)
 
         model = Sequential()
@@ -66,14 +66,17 @@ class Classifier():
         model.fit(self.trainTrain,self.trainTrainLabel,validation_split = 0.2,batch_size=30,epochs=EPOCHS)
 
   # def eval(model):
-        pred = model.predict(self.trainValid)     
-        pred = np.argmax(pred,axis = 1)
+        pred1 = model.predict(self.trainValid)     
+        pred2 = np.argmax(pred1,axis = 1)
         trueAnswer = np.argmax(self.trainValidLabel,axis = 1)
-        numCorrect = (pred == trueAnswer).sum()
-        precision = numCorrect / len(pred)        
+        numCorrect = (pred2 == trueAnswer).sum()
+        precision = numCorrect / len(pred2)        
         print('Precision of the Model is ... :',precision)
         print(numCorrect)
-        print(len(pred))
+        print(len(pred2))
+        print(pred1)
+        print(pred2)
+        print(trueAnswer)
         
         model.save('saved_models/{}.h5'.format(time.ctime()))
 
@@ -87,10 +90,18 @@ def main():
     _dogsCats = np.concatenate([_dogs,_cats])
     _dogsCatsLabel =np.concatenate([_dogsLabel,_catsLabel])
 
-    trainTrain = _dogsCats[:300]
-    trainValid = _dogsCats[300:]
-    trainTrainLabel = _dogsCatsLabel[:300]
-    trainValidLabel = _dogsCatsLabel[300:]
+    shuffleIndex = np.random.randint(0,_dogsCats.shape[0],_dogsCats.shape[0])
+    _dogsCats = _dogsCats[shuffleIndex]
+    _dogsCatsLabel = _dogsCatsLabel[shuffleIndex]
+
+    trainTrain = _dogsCats[:600]
+    trainValid = _dogsCats[600:]
+    trainTrainLabel = _dogsCatsLabel[:600]
+    trainValidLabel = _dogsCatsLabel[600:]
+    
+    print('traintrainlabel \n',trainTrainLabel)
+    
+    print('trainvalidlabel \n',trainValidLabel)
 
     classifyingModel = Classifier(trainTrain,trainTrainLabel,trainValid,trainValidLabel)
     model = classifyingModel.train()    #学習、評価
